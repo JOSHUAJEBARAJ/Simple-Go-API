@@ -1,6 +1,9 @@
 package todo
 
-import "errors"
+import (
+	"errors"
+	"strings"
+)
 
 type Item struct {
 	Task   string
@@ -26,6 +29,16 @@ func (svc *Service) Add(s string) error {
 	}
 	svc.todo = append(svc.todo, Item{Task: s, Status: "TO BE DONE"})
 	return nil
+}
+
+func (svc *Service) Search(s string) []string {
+	var result []string
+	for _, v := range svc.todo {
+		if strings.Contains(v.Task, s) {
+			result = append(result, v.Task)
+		}
+	}
+	return result
 }
 
 func (svc *Service) GetAll() []Item {

@@ -58,6 +58,24 @@ func NewServer(svc *todo.Service) *Server {
 
 	})
 
+	mux.HandleFunc("POST /search", func(w http.ResponseWriter, r *http.Request) {
+		query := r.URL.Query().Get("q")
+		if query == "" {
+			w.WriteHeader(http.StatusBadRequest)
+			return
+		}
+		output := svc.Search(query)
+
+		b, err := json.Marshal(output)
+		if err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+		w.Write(b)
+		return
+
+	})
+
 	return &Server{
 		mux: mux,
 	}
