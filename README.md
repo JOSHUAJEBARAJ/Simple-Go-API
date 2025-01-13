@@ -19,3 +19,18 @@
  - Next create the functions to get and create the todo.
 
  - Next create the transport layer to handle the request and response.
+
+
+ ### Database 
+
+
+ ```
+ CREATE TABLE todo_items(
+id SERIAL PRIMARY KEY,
+task VARCHAR(255) NOT NULL,
+status VARCHAR(255) NOT NULL,
+created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+```
+
+- We are going to use the third party library because it allows the connection pooling

@@ -22,7 +22,13 @@ func NewServer(svc *todo.Service) *Server {
 	mux := http.NewServeMux()
 	mux.HandleFunc("GET /todo", func(w http.ResponseWriter, r *http.Request) {
 
-		b, err := json.Marshal(svc.GetAll())
+		todos, err := svc.GetAll()
+		if err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+
+		b, err := json.Marshal(todos)
 		if err != nil {
 			log.Println(err)
 			w.WriteHeader(http.StatusBadRequest)
@@ -58,23 +64,23 @@ func NewServer(svc *todo.Service) *Server {
 
 	})
 
-	mux.HandleFunc("POST /search", func(w http.ResponseWriter, r *http.Request) {
-		query := r.URL.Query().Get("q")
-		if query == "" {
-			w.WriteHeader(http.StatusBadRequest)
-			return
-		}
-		output := svc.Search(query)
+	// mux.HandleFunc("POST /search", func(w http.ResponseWriter, r *http.Request) {
+	// 	query := r.URL.Query().Get("q")
+	// 	if query == "" {
+	// 		w.WriteHeader(http.StatusBadRequest)
+	// 		return
+	// 	}
+	// 	output := svc.Search(query)
 
-		b, err := json.Marshal(output)
-		if err != nil {
-			w.WriteHeader(http.StatusInternalServerError)
-			return
-		}
-		w.Write(b)
-		return
+	// 	b, err := json.Marshal(output)
+	// 	if err != nil {
+	// 		w.WriteHeader(http.StatusInternalServerError)
+	// 		return
+	// 	}
+	// 	w.Write(b)
+	// 	return
 
-	})
+	// })
 
 	return &Server{
 		mux: mux,
